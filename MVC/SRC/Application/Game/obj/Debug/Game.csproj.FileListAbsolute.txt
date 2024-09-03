@@ -1,0 +1,1 @@
+D:\練習20230703\practice2015\20240902(MVC登入)\MVC\SRC\Application\Game\bin\Debug\Game.exe.config
