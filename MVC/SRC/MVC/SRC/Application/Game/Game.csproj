@@ -69,6 +69,7 @@
     <Compile Include="Role.cs" />
     <Compile Include="Script.cs" />
     <Compile Include="SQL.cs" />
+    <Compile Include="SQLFormat.cs" />
     <Compile Include="SQLProcess.cs" />
     <Compile Include="WebLog.cs">
       <SubType>ASPXCodeBehind</SubType>

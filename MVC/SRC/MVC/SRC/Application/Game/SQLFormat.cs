@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
@@ -8,13 +9,9 @@ using System.Threading.Tasks;
 
 namespace Game
 {
-    class ParameterConverter
+    class SQLFormat
     {
-        /// <summary>
-        /// 把"轉成'，把`轉成空白
-        /// </summary>
-        /// <param name="Command">字串語法</param>
-        /// <returns></returns>
+
         static public string ConvertCommandToSqlFormat(string Command)
         {
             String ret = Command;
@@ -22,12 +19,6 @@ namespace Game
             ret = ret.Replace("`", " ");
             return ret.ToString();
         }
-        /// <summary>
-        /// 如果不是NULL返回變數參數，是NULL使用ConvertParaToSql方法
-        /// </summary>
-        /// <param name="cmd">字串語法</param>
-        /// <param name="Para">變數參數</param>
-        /// <returns></returns>
         public static SqlParameter[] ConvertParaToSqlPara(ref String cmd, object[] Para)
         {
             Trace.Assert(Para != null);
@@ -47,12 +38,7 @@ namespace Game
             ret = ConvertParaToSql(ref cmd, par);
             return ret;
         }
-        /// <summary>
-        /// 如果參數命名為:而不是@開頭，改成@開頭
-        /// </summary>
-        /// <param name="cmd">字串語法</param>
-        /// <param name="Para">變數參數</param>
-        /// <returns></returns>
+
         public static SqlParameter[] ConvertParaToSql(ref String cmd, SqlParameter[] Para)
         {
             Trace.Assert(Para != null);
@@ -67,5 +53,6 @@ namespace Game
             }
             return ret;
         }
+
     }
 }

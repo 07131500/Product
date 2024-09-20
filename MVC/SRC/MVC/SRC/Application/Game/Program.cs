@@ -39,22 +39,17 @@ namespace Game
                 password = Console.ReadLine();
             }
             bool count=s.IsUser(account,password);
-            DataTable dt=s.GetUserInfo(account);
-            //StringBuilder strSql = new StringBuilder();
-            //List<SqlParameter> sqlParamList = new List<SqlParameter>();
-
-            //strSql.AppendLine("SELECT * FROM User_Info WHERE 1=1 ");
-            //strSql.AppendLine($"AND userId='{account}' AND password='{password}' ");
-
-            //string f = strSql.ToString();
             if (count)
             {
-                Console.WriteLine("註冊成功");
+                DataTable dt = s.GetUserInfo(account);
+                Console.WriteLine("登入成功");
             }
             else
             {
-                Console.WriteLine("註冊失敗");
+                Console.WriteLine("登入失敗");
             }
+            
+           
             Console.ReadLine();
             Program p = new Program();
            

@@ -9,35 +9,44 @@ using System.Web.UI;
 
 namespace Game
 {
-    class Log 
+    class Log
     {
-       
+
 
 
         /// <summary>
-        /// 寫Trace Log
+        /// 寫Trace Log，但其實都是用StreamWriter寫log，Trace只是有誤會跳提示視窗
         /// </summary>
         /// <param name="TxtName">要建的txt文件名稱</param>
         /// <param name="Conditions">判斷式真假</param>
         /// <param name="TraceName">這個事件名稱</param>
         public void WriteTraceLogTxt(string TxtName, bool Conditions, string TraceName)
         {
-            string strPath = System.AppDomain.CurrentDomain.BaseDirectory + "Log\\";
-            string strFileName = System.DateTime.Now.ToString("yyyyMMdd");
-            string strFilePath= strPath + strFileName;
-            string strTime= System.DateTime.Now.ToString("HH:mm:ss");
-            string strMemo = "[" + strTime + "] " + TxtName;
-            // 添加 TraceListener  txtName
-            Trace.Listeners.Add(new TextWriterTraceListener(TxtName));
-            Trace.Listeners.Add(new ConsoleTraceListener());
-            // 斷言 false出現TraceName
-            Trace.Assert(Conditions, TraceName);
-            // 确保所有輸出都被寫入到文件中
-            Trace.Flush();
-            // 移除所有 TraceListener
-            Trace.Listeners.Clear();
+            try
+            {
+                string strPath = System.AppDomain.CurrentDomain.BaseDirectory + "Log\\";
+                string strFileName = TxtName + System.DateTime.Now.ToString("yyyyMMdd");
+                string strFilePath = strPath + strFileName;
+                string strTime = System.DateTime.Now.ToString("HH:mm:ss");
+                string strMemo = "[" + strTime + "] " + TraceName;
+                // 添加 TraceListener  路徑加檔名
+                Trace.Listeners.Add(new TextWriterTraceListener(strFilePath));
+                Trace.Listeners.Add(new ConsoleTraceListener());
+                // 斷言 false出現strMemo 內容
+                Trace.Assert(Conditions, strMemo);
+                // 确保所有輸出都被寫入到文件中
+                Trace.Flush();
+                // 移除所有 TraceListener
+                Trace.Listeners.Clear();
+            }
+            catch (Exception ex)
+            {
+                // 记录异常信息到日志文件或其他日志系统
+                Trace.TraceError("Exception: " + ex.Message);
+            }
         }
-     
+
+
 
         /// <summary>
         /// 寫ConsoleLog
@@ -50,7 +59,7 @@ namespace Game
                 //資料夾名稱
                 string strPath = System.AppDomain.CurrentDomain.BaseDirectory + "\\Log\\";
                 //檔案名稱，可以加入ID顯示不同
-                string strFileName =  System.DateTime.Now.ToString("yyyyMMdd") + ".txt";
+                string strFileName = System.DateTime.Now.ToString("yyyyMMdd") + ".txt";
                 string strFilePath = strPath + strFileName;
                 //生成日期
                 string strTime = System.DateTime.Now.ToString("HH:mm:ss");
@@ -82,7 +91,7 @@ namespace Game
         public void WriteWindowFormLog(string strMsg)
         {
             try
-            { 
+            {
                 //資料夾名稱
                 string strPath = System.AppDomain.CurrentDomain.BaseDirectory + "Log\\";
                 //檔案名稱，可以加入ID顯示不同

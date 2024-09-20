@@ -12,6 +12,11 @@ namespace Game
     {
         public Guid Logintoken;
 
+        public enum Behavior
+        {
+            register=0,
+            login
+        }
 
         private string userId;
 
@@ -30,7 +35,22 @@ namespace Game
         }
 
 
-        
+        public void IsRegisterOrLogin(int UserWantDo)
+        {
+            // 將整數轉換為 Behavior 列舉
+            Behavior action = (Behavior)UserWantDo;
+            //註冊
+            if (action == Behavior.register)
+            {
+
+            }
+            //登入
+            if(action == Behavior.login)
+            {
+
+            }
+
+        }
 
 
         /// <summary>
@@ -57,7 +77,7 @@ namespace Game
         //        //throw new Exception("");
         //        return "";
         //    }
-            
+
         //}
 
     }
