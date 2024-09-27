@@ -1,5 +1,0 @@
-CREATE TABLE [dbo].[User_Info]
-(
-	[userId] NVARCHAR(8) NOT NULL PRIMARY KEY, 
-    [password] NVARCHAR(8) NULL
-)
