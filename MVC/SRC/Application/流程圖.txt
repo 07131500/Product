@@ -1,0 +1,80 @@
+系統
+1 註冊
+
+2 登入
+
+登入後要做什麼?
+
+文字冒險遊戲，所以我需要HP ATTACK DEFENSE
+
+還要有怪物   裝備
+
+Character /Person人物Role角色
+名稱 能力 HP ATTACK DEFENSE
+戰士 職業特性攻擊後附加特性        1    1     1     每級 
+火戰士                                               2    2     2
+燒傷 每次攻擊扣血1%
+血戰士                                               3    3     3
+流血 每次攻擊扣血5%
+冰戰士                                               4    4     4
+冰凍 跳過一回合
+
+TypeName   職業名稱
+
+還有一個表格放通用   每級增加   及職業特性
+戰士 ParamGroup   
+ HP  Attack    DEFENSE   ParamName
+   1      1            1              ParamValue
+每級增加                         Description
+
+戰士 ParamGroup   
+   ParamName
+   1      1            1              ParamValue
+每級增加                         Description
+
+
+Monster怪物
+名稱 能力 HP ATTACK DEFENSE
+小史          1     1             1
+小萊          2     2             2
+史萊姆      10     5             5
+史萊姆王  50     25          25
+
+
+Abilite  能力
+SKILL  HP ATTACK DEFENSE
+
+
+
+裝備  HP  ATTACK  DEFENSE  Describe
+短劍  0     1                0               短小無力
+劍      1     1               0	   最普通的武器之一
+寬劍   1     1               1	   均衡且沒特色
+長劍   1       2             0	   變長了，還是很普通
+大長劍  1    2             1	   又長又大
+
+
+
+3 
+
+
+
+
+
+
+
+
+
+
+
+VM
+
+Inter Omter
+
+
+
+
+
+
+
+

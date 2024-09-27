@@ -1,0 +1,86 @@
+CREATE TABLE [dbo].[User_Info]
+(
+	[userId] NVARCHAR(8) NOT NULL PRIMARY KEY, 
+    [password] NVARCHAR(8) NULL
+)
+
+
+
+CREATE TABLE [dbo].[Sys_Config] (
+    [ParamGroup]  NVARCHAR (30) NOT NULL,
+    [ParamName]   NVARCHAR (30) NOT NULL,
+    [ParamValue]  NVARCHAR (50) NULL,
+    [Description] NVARCHAR (50) NULL,
+    CONSTRAINT [PK_Sys_Config] PRIMARY KEY CLUSTERED ([ParamGroup] ASC, [ParamName] ASC)
+);
+
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'冰戰士', N'Attack', N'4', N'每級增加能力值')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'冰戰士', N'Defense', N'4', N'每級增加能力值')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'冰戰士', N'Feature', N'25%', N'職業特性，每一回合有25%停止行動')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'冰戰士', N'HP', N'4', N'每級增加能力值')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'戰士', N'Attack', N'1', N'每級增加能力值')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'戰士', N'Defense', N'1', N'每級增加能力值')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'戰士', N'HP', N'1', N'每級增加能力值')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'火戰士', N'Attack', N'2', N'每級增加能力值')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'火戰士', N'Defense', N'2', N'每級增加能力值')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'火戰士', N'Feature', N'1%', N'職業特性，每一回合扣血1%，持續N回合，可疊加5層')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'火戰士', N'HP', N'2', N'每級增加能力值')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'血戰士', N'Attack', N'3', N'每級增加能力值')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'血戰士', N'Defense', N'3', N'每級增加能力值')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'血戰士', N'Feature', N'5%', N'職業特性，每一回合扣血5%，持續N回合，可疊加5層')
+INSERT INTO [dbo].[Sys_Config] ([ParamGroup], [ParamName], [ParamValue], [Description]) VALUES (N'血戰士', N'HP', N'3', N'每級增加能力值')
+
+CREATE TABLE [dbo].[Role] (
+    [Id]       NVARCHAR (50) NOT NULL,
+    [Name]     NVARCHAR (50) NULL,
+    [TypeName] NVARCHAR (50) NULL,
+    [Level]    INT           NULL,
+    [HP]       INT           NULL,
+    [Attack]   INT           NULL,
+    [Defense]  INT           NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+
+CREATE TABLE [dbo].[Monster] (
+    [MonsterId]   INT           IDENTITY (1, 1) NOT NULL,
+    [MonsterName] NVARCHAR (16) NULL,
+    [AbilityId]   VARCHAR (50)  NULL,
+    [HP]          INT           NULL,
+    [Attack]      INT           NULL,
+    [Defense]     INT           NULL,
+    PRIMARY KEY CLUSTERED ([MonsterId] ASC)
+);
+
+SET IDENTITY_INSERT [dbo].[Monster] ON
+INSERT INTO [dbo].[Monster] ([MonsterId], [MonsterName], [AbilityId], [HP], [Attack], [Defense]) VALUES (1, N'小史', N'0E6E3978-A3F4-4D5D-B9E0-468D40841204', 1, 1, 1)
+INSERT INTO [dbo].[Monster] ([MonsterId], [MonsterName], [AbilityId], [HP], [Attack], [Defense]) VALUES (2, N'小萊', N'90DAE309-1DE5-497C-B1C0-643FB32123EF', 2, 2, 2)
+INSERT INTO [dbo].[Monster] ([MonsterId], [MonsterName], [AbilityId], [HP], [Attack], [Defense]) VALUES (3, N'史萊姆', N'2F6A4ABB-097F-405A-9C26-E2A5324E02C4', 10, 5, 5)
+INSERT INTO [dbo].[Monster] ([MonsterId], [MonsterName], [AbilityId], [HP], [Attack], [Defense]) VALUES (4, N'史萊姆王', N'F178D269-0D95-4D2C-8AB7-5FF7CA567E4F', 50, 25, 25)
+SET IDENTITY_INSERT [dbo].[Monster] OFF
+
+
+
+CREATE TABLE [dbo].[Equip] (
+    [Equip_Id]   INT            IDENTITY (1, 1) NOT NULL,
+    [Equip_Name] NVARCHAR (30)  NULL,
+    [HP]         INT            NULL,
+    [Attack]     INT            NULL,
+    [Defense]    INT            NULL,
+    [Describe]   NVARCHAR (100) NULL,
+    PRIMARY KEY CLUSTERED ([Equip_Id] ASC)
+);
+
+SET IDENTITY_INSERT [dbo].[Equip] ON
+INSERT INTO [dbo].[Equip] ([Equip_Id], [Equip_Name], [HP], [Attack], [Defense], [Describe]) VALUES (1, N'短劍', 0, 1, 0, N'短小無力')
+INSERT INTO [dbo].[Equip] ([Equip_Id], [Equip_Name], [HP], [Attack], [Defense], [Describe]) VALUES (2, N'劍', 1, 1, 0, N'最普通的武器之一')
+INSERT INTO [dbo].[Equip] ([Equip_Id], [Equip_Name], [HP], [Attack], [Defense], [Describe]) VALUES (3, N'寬劍', 1, 1, 1, N'均衡且沒特色')
+INSERT INTO [dbo].[Equip] ([Equip_Id], [Equip_Name], [HP], [Attack], [Defense], [Describe]) VALUES (4, N'長劍', 1, 2, 0, N'變長了，還是很普通')
+INSERT INTO [dbo].[Equip] ([Equip_Id], [Equip_Name], [HP], [Attack], [Defense], [Describe]) VALUES (5, N'大長劍', 1, 2, 1, N'又長又大')
+SET IDENTITY_INSERT [dbo].[Equip] OFF
+
+
+
+
+
+
