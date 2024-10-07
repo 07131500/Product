@@ -26,55 +26,55 @@ namespace Game
         /// <summary>
         /// 新增User_Info資料表資料
         /// </summary>
-        /// <param name="account"></param>
-        /// <param name="password"></param>
+        /// <param name="Account"></param>
+        /// <param name="Password"></param>
         /// <returns></returns>
-        public int CreateUser(string account, string password)
+        public int CreateUser(string Account, string Password)
         {
             StringBuilder strSql = new StringBuilder();
             List<SqlParameter> sqlParamList = new List<SqlParameter>();
 
-            strSql.AppendLine("INSERT INTO User_Info (userId,password)  ");
+            strSql.AppendLine("INSERT INTO User_Info (UserId,Password)  ");
             strSql.AppendLine("VALUES ( @account , @password ) ");
             //避免SQL注入
-            sqlParamList.Add(new SqlParameter("@ACCOUNT", account));
-            sqlParamList.Add(new SqlParameter("@PASSWORD", password));
+            sqlParamList.Add(new SqlParameter("@ACCOUNT", Account));
+            sqlParamList.Add(new SqlParameter("@PASSWORD", Password));
 
             var commnadResult = sp.ExecuteNonQuery(strSql.ToString(), sqlParamList.ToArray(), CommandType.Text);
-            
+
             return commnadResult;
         }
 
-        public DataTable GetUserInfo(string account)
+        public DataTable GetUserInfo(string Account)
         {
             DataTable dt = new DataTable();
             StringBuilder strSql = new StringBuilder();
             List<SqlParameter> sqlParamList = new List<SqlParameter>();
             strSql.AppendLine("SELECT * FROM User_Info WHERE 1=1 ");
 
-            if (account != "")
+            if (Account != "")
             {
-                strSql.AppendLine("AND userId=@account ");
-                sqlParamList.Add(new SqlParameter ("@account", account ));
+                strSql.AppendLine("AND UserId=@account ");
+                sqlParamList.Add(new SqlParameter("@account", Account));
             }
 
-           dt= sp.ExecuteDataTable(strSql.ToString(), sqlParamList.ToArray(), CommandType.Text);
+            dt = sp.ExecuteDataTable(strSql.ToString(), sqlParamList.ToArray(), CommandType.Text);
 
             return dt;
         }
 
-     
-        public bool IsUser(string account, string password)
+
+        public bool IsUser(string Account, string Password)
         {
             StringBuilder strSql = new StringBuilder();
             List<SqlParameter> sqlParamList = new List<SqlParameter>();
-            
+
             strSql.AppendLine("SELECT * FROM User_Info WHERE 1=1 ");
-            strSql.AppendLine("AND userId=@account AND password=@password ");
+            strSql.AppendLine("AND UserId=@account AND Password=@password ");
 
             //避免SQL注入，使用 SqlParameter 添加参数
-            sqlParamList.Add(new SqlParameter("@ACCOUNT", account));
-            sqlParamList.Add(new SqlParameter("@PASSWORD", password));
+            sqlParamList.Add(new SqlParameter("@ACCOUNT", Account));
+            sqlParamList.Add(new SqlParameter("@PASSWORD", Password));
             SqlParameter[] objAryParam = sqlParamList.ToArray();
 
             DataTable commnadResult = sp.ExecuteDataTable(strSql.ToString(), objAryParam, CommandType.Text); //comm.ExecuteScalar();
@@ -90,11 +90,11 @@ namespace Game
         public string GET_NEWID()
         {
             string sql = "SELECT NEWID()";
-            return sp.ExecuteScalar(sql,CommandType.Text).ToUpper();
+            return sp.ExecuteScalar(sql, CommandType.Text).ToUpper();
         }
 
 
-        
+
 
         /// <summary>
         /// 創建怪物
@@ -105,23 +105,38 @@ namespace Game
         /// <param name="HP"></param>
         /// <param name="Attack"></param>
         /// <param name="Defense"></param>
+        /// <param name="Exp"></param>
         /// <returns></returns>
-        public int CreateMonster( string MonsterName,string AbilityId, int HP,int Attack,int Defense)
+        public int CreateMonster(string MonsterName, string AbilityId, int HP, int Attack, int Defense, int Exp)
         {
             StringBuilder strSql = new StringBuilder();
             List<SqlParameter> sqlParamList = new List<SqlParameter>();
-            strSql.AppendLine("INSERT INTO Monster (MonsterName,AbilityId,HP,Attack,Defense)  ");
-            strSql.AppendLine("VALUES ( @MonsterName , @AbilityId,@HP,@Attack,@Defense ) ");
-            
+            strSql.AppendLine("INSERT INTO Monster (MonsterName,AbilityId,HP,Attack,Defense,Exp)  ");
+            strSql.AppendLine("VALUES ( @MonsterName , @AbilityId,@HP,@Attack,@Defense,@Exp ) ");
+
             sqlParamList.Add(new SqlParameter("@MonsterName", MonsterName));
             sqlParamList.Add(new SqlParameter("@HP", HP));
             sqlParamList.Add(new SqlParameter("@Attack", Attack));
             sqlParamList.Add(new SqlParameter("@Defense", Defense));
             sqlParamList.Add(new SqlParameter("@AbilityId", AbilityId));
+            sqlParamList.Add(new SqlParameter("@Exp", Exp));
 
             var commnadResult = sp.ExecuteNonQuery(strSql.ToString(), sqlParamList.ToArray(), CommandType.Text);
-            return 0;
+            return commnadResult;
         }
+
+
+        public DataTable QueryMonster()
+        {
+            StringBuilder strSql = new StringBuilder();
+            List<SqlParameter> sqlParamList = new List<SqlParameter>();
+            strSql.AppendLine("SELECT * FROM Monster WHERE 1=1 ");
+
+
+            DataTable commnadResult = sp.ExecuteDataTable(strSql.ToString(), CommandType.Text); //comm.ExecuteScalar();
+            return commnadResult;
+        }
+
 
 
         /// <summary>
@@ -133,21 +148,21 @@ namespace Game
         /// <param name="Defense"></param>
         /// <param name="Describe"></param>
         /// <returns></returns>
-        public int CreateEquip(string EquipName,  int HP, int Attack, int Defense,string Describe)
+        public int CreateEquip(string EquipName, int HP, int Attack, int Defense, string Describe)
         {
             StringBuilder strSql = new StringBuilder();
             List<SqlParameter> sqlParamList = new List<SqlParameter>();
-            strSql.AppendLine("INSERT INTO Equip (Equip_Name,HP,Attack,Defense,Describe)  ");
-            strSql.AppendLine("VALUES ( @Equip_Name ,@HP,@Attack,@Defense,@Describe ) ");
+            strSql.AppendLine("INSERT INTO Equip (EquipName,HP,Attack,Defense,Describe)  ");
+            strSql.AppendLine("VALUES ( @EquipName ,@HP,@Attack,@Defense,@Describe ) ");
 
-            sqlParamList.Add(new SqlParameter("@Equip_Name", EquipName));
+            sqlParamList.Add(new SqlParameter("@EquipName", EquipName));
             sqlParamList.Add(new SqlParameter("@HP", HP));
             sqlParamList.Add(new SqlParameter("@Attack", Attack));
             sqlParamList.Add(new SqlParameter("@Defense", Defense));
             sqlParamList.Add(new SqlParameter("@Describe", Describe));
 
             var commnadResult = sp.ExecuteNonQuery(strSql.ToString(), sqlParamList.ToArray(), CommandType.Text);
-            return 0;
+            return commnadResult;
         }
 
         /// <summary>
@@ -173,12 +188,59 @@ namespace Game
             sqlParamList.Add(new SqlParameter("@ID", Id));
 
             var commnadResult = sp.ExecuteNonQuery(strSql.ToString(), sqlParamList.ToArray(), CommandType.Text);
-            return 0;
+            return commnadResult;
         }
 
+        public DataTable GetRole(int UserId)
+        {
+            StringBuilder strSql = new StringBuilder();
+            List<SqlParameter> sqlParamList = new List<SqlParameter>();
+            strSql.AppendLine("SELECT * FROM Role WHERE 1=1 ");
+            strSql.AppendLine("AND @Id=Id ");
+
+            sqlParamList.Add(new SqlParameter("@Id", UserId));
+            DataTable commnadResult = sp.ExecuteDataTable(strSql.ToString(), sqlParamList.ToArray(), CommandType.Text); 
+            return commnadResult;
+        }
+
+
         //註冊時自動建立戰士資料
+        public bool CreatePlayer(string Account, string Password, string Id, string Name, int HP, int Attack, int Defense)
+        {
+            try
+            {
+                StringBuilder strSql;
+                List<SqlParameter> sqlParamList;
+                strSql = new StringBuilder();
+                sqlParamList = new List<SqlParameter>();
 
+                strSql.AppendLine("INSERT INTO User_Info (UserId,Password)  ");
+                strSql.AppendLine("VALUES ( @account , @password ) ");
+                //避免SQL注入
+                sqlParamList.Add(new SqlParameter("@account", Account));
+                sqlParamList.Add(new SqlParameter("@password", Password));
 
+                var commnadResult = sp.ExecuteNonQuery(strSql.ToString(), sqlParamList.ToArray(), CommandType.Text);
+
+                strSql = new StringBuilder();
+                sqlParamList = new List<SqlParameter>();
+                strSql.AppendLine("INSERT INTO Role (Id,Name,Level,HP,Attack,Defense)  ");
+                strSql.AppendLine("VALUES ( @Id,@Name,@Level,@HP,@Attack,@Defense ) ");
+
+                sqlParamList.Add(new SqlParameter("@Name", Name));
+                sqlParamList.Add(new SqlParameter("@HP", HP));
+                sqlParamList.Add(new SqlParameter("@Attack", Attack));
+                sqlParamList.Add(new SqlParameter("@Defense", Defense));
+                sqlParamList.Add(new SqlParameter("@ID", Id));
+
+                var commnadResult2 = sp.ExecuteNonQuery(strSql.ToString(), sqlParamList.ToArray(), CommandType.Text);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
+        }
 
 
     }

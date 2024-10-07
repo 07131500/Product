@@ -29,6 +29,11 @@ namespace Game
                 string strFilePath = strPath + strFileName;
                 string strTime = System.DateTime.Now.ToString("HH:mm:ss");
                 string strMemo = "[" + strTime + "] " + TraceName;
+
+                if (System.IO.Directory.Exists(strPath) == false)
+                {
+                    System.IO.Directory.CreateDirectory(strPath);
+                }
                 // 添加 TraceListener  路徑加檔名
                 Trace.Listeners.Add(new TextWriterTraceListener(strFilePath));
                 Trace.Listeners.Add(new ConsoleTraceListener());

@@ -48,6 +48,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NPOI">
+      <HintPath>..\..\DLL\NPOI\2.0.6\dotnet4\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>..\..\DLL\NPOI\2.0.6\dotnet4\NPOI.OOXML.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -61,6 +67,8 @@
   <ItemGroup>
     <Compile Include="GetSetParams.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Monster.cs" />
+    <Compile Include="NPOI_Helper_Utility.cs" />
     <Compile Include="User.cs" />
     <Compile Include="MSSQL.cs" />
     <Compile Include="ParameterConverter.cs" />

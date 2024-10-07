@@ -97,7 +97,18 @@ namespace Game
             conn.Close();
             return ModifyNum;
         }
-
+        public DataTable ExecuteDataTable(string strCommand, CommandType CommandType)
+        {
+            EnsureConnection();
+            SqlCommand Command = CreateSqlCommand(strCommand, CommandType);
+            DataTable dt = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter(Command);
+            CheckTransaction(Command);
+            da.Fill(dt);
+            if (Command.Transaction == null)
+                conn.Close();
+            return dt;
+        }
 
         public DataTable ExecuteDataTable(string strCommand, object[] Parameters, CommandType CommandType)
         {
@@ -130,6 +141,14 @@ namespace Game
             {
                 throw;
             }
+        }
+
+        private SqlCommand CreateSqlCommand(string strCommand, CommandType CommandType)
+        {
+            strCommand = SQLFormat.ConvertCommandToSqlFormat(strCommand);
+            SqlCommand Command = new SqlCommand(strCommand, conn);
+            Command.CommandType = CommandType;
+            return Command;
         }
 
         private SqlCommand CreateSqlCommand(string strCommand, object[] Parameters, CommandType CommandType)
