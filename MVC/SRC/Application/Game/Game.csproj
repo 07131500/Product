@@ -74,12 +74,10 @@
     <Compile Include="ParameterConverter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Role.cs" />
     <Compile Include="Script.cs" />
     <Compile Include="SQL.cs" />
     <Compile Include="SQLFormat.cs" />
     <Compile Include="SQLParameter.cs" />
-    <Compile Include="SQLProcess.cs" />
     <Compile Include="WebLog.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
