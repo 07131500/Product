@@ -28,7 +28,7 @@ namespace Game
                 ret = (SqlParameter[])Para;
             }
             catch (Exception e)
-            {
+            { 
             }
             if (ret != null)
             {

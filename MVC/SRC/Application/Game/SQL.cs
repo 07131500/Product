@@ -191,17 +191,40 @@ namespace Game
             return commnadResult;
         }
 
-        public DataTable GetRole(int UserId)
+        public DataTable GetRole(string UserId)
         {
             StringBuilder strSql = new StringBuilder();
             List<SqlParameter> sqlParamList = new List<SqlParameter>();
-            strSql.AppendLine("SELECT * FROM Role WHERE 1=1 ");
-            strSql.AppendLine("AND @Id=Id ");
+            strSql.AppendLine("SELECT * FROM Role LEFT JOIN RoleExp ON Role.Level=RoleExp.Level  WHERE 1=1 ");
+            strSql.AppendLine("AND @UserId=UserId ");
 
-            sqlParamList.Add(new SqlParameter("@Id", UserId));
+            sqlParamList.Add(new SqlParameter("@UserId", UserId));
             DataTable commnadResult = sp.ExecuteDataTable(strSql.ToString(), sqlParamList.ToArray(), CommandType.Text); 
             return commnadResult;
         }
+
+
+        //更新腳色資料 ，更新等級及屬性
+        public int UpdateRole(string RoleId, int Level,int HP, int Attack, int Defense,int CurrentExp)
+        {
+            StringBuilder strSql = new StringBuilder();
+            List<SqlParameter> sqlParamList = new List<SqlParameter>();
+            strSql.AppendLine("UPDATE Role SET Level=@Level,HP=@HP,Attack=@Attack,Defense=@Defense, Power=@Power, Agile=@Agile, Intellect=@Intellect,CurrentExp=@CurrentExp");
+            strSql.AppendLine(" WHERE 1=1  AND Id=@Id");
+
+            sqlParamList.Add(new SqlParameter("@Id", RoleId));
+            sqlParamList.Add(new SqlParameter("@Level", Level));
+            sqlParamList.Add(new SqlParameter("@HP", HP));
+            sqlParamList.Add(new SqlParameter("@Attack", Attack));
+            sqlParamList.Add(new SqlParameter("@Defense", Defense));
+            sqlParamList.Add(new SqlParameter("@Power", Level));
+            sqlParamList.Add(new SqlParameter("@Agile", Level));
+            sqlParamList.Add(new SqlParameter("@Intellect", Level));
+            sqlParamList.Add(new SqlParameter("@CurrentExp", CurrentExp));
+            int commnadResult = sp.ExecuteNonQuery(strSql.ToString(), sqlParamList.ToArray(), CommandType.Text);
+            return commnadResult;
+        }
+
 
 
         //註冊時自動建立戰士資料

@@ -17,10 +17,20 @@ namespace Game
         //取得目前程式的名稱
         public static string ProcessName = Process.GetCurrentProcess().ProcessName;
 
-        public class UserInfo
+        private class UserInfo
         {
-
+            public string selectedRoleId { get; set; }
+            public string selectedRoleName { get; set; }
+            public string selectedTypeName { get; set; }
+            public int selectedLevel { get; set; }
+            public int selectedHp { get; set; }
+            public int selectedAttack { get; set; }
+            public int selectedDefense { get; set; }
+            public int selectedPower { get; set; }
+            public int selectedAgile { get; set; }
+            public int selectedIntellect { get; set; }
         }
+       static User user = new User();
 
         static void Main(string[] args)
         {
@@ -41,12 +51,12 @@ namespace Game
             Role.Status status = Role.Status.live;
 
             #region 註冊/登入
-            //p.ChooseWantDo();
+            p.ChooseWantDo();
             #endregion
 
             #region 創造一到一百的資料
-            NPOI_Helper_Utility npoi_helper = new NPOI_Helper_Utility();
-            npoi_helper.CreateNewExcel_Foreach_XLSX("ExpTable");
+            //NPOI_Helper_Utility npoi_helper = new NPOI_Helper_Utility();
+            //npoi_helper.CreateNewExcel_Foreach_XLSX("ExpTable");
             #endregion
 
             #region 創造怪物
@@ -66,17 +76,7 @@ namespace Game
             //string EquipDescribe = p.stringInput("裝備描述");
             //ms.CreateEquip(EquipName, HP, Attack, Defense, EquipDescribe);
             #endregion
-
-
-
-            #region 登入成功後取得人物資料
-            //用GetRole取得Level [Power]     [Agile] [Intellect]  
-            //
-            //
-            
-            #endregion
-
-
+          
             Console.WriteLine((int)status);
             Console.ReadLine();
         }
@@ -91,7 +91,8 @@ namespace Game
             Console.WriteLine();
             Console.WriteLine("請選擇接下來的行動:數字1(冒險)、數字2(商店)、數字3(登出)");
             string b = Console.ReadLine();
-            switch (b) {
+            switch (b)
+            {
                 case "1":
                     Adventure();
                     break;
@@ -102,8 +103,8 @@ namespace Game
                     Console.WriteLine("已登出");
                     break;
             }
-          
-            
+
+
 
         }
         /// <summary>
@@ -126,7 +127,7 @@ namespace Game
                     Console.WriteLine("沒有怪物資料可供生成。");
                 }
                 #endregion
-                
+
                 Console.WriteLine("請輸入(1:繼續/2:返回)");
                 a = Console.ReadLine();
 
@@ -145,86 +146,18 @@ namespace Game
             //註冊
             if (action == User.Behavior.register)
             {
-                UserRegister();
+               user.Register();
             }
             //登入
             if (action == User.Behavior.login)
             {
-                UserLogin();
+               user.Login();
             }
 
         }
 
 
-        public void UserRegister()
-        {
-            Console.WriteLine("註冊系統:");
-            Console.WriteLine("-----------------------------------------------------");
-            Console.WriteLine("註冊:");
-            Console.WriteLine("-----------------------------------------------------");
-
-            string account = CheckInputNumber("帳號", 8);
-            string password = CheckInputNumber("密碼", 8);
-
-            int count = ms.CreateUser(account, password);
-            if (count > 0)
-            {
-                DataTable dt = ms.GetUserInfo(account);
-                Console.WriteLine("註冊成功");
-            }
-            else
-            {
-                Console.WriteLine("註冊失敗");
-            }
-        }
-
-        public void UserLogin()
-        {
-            Console.WriteLine("登入系統:");
-            Console.WriteLine("-----------------------------------------------------");
-            Console.WriteLine("登入:");
-            Console.WriteLine("-----------------------------------------------------");
-
-            string account = CheckInputNumber("帳號", 8);
-            string password = CheckInputNumber("密碼", 8);
-
-            bool count = ms.IsUser(account, password);
-            if (count)
-            {
-                DataTable dt = ms.GetUserInfo(account);
-                Console.WriteLine("登入成功");
-                
-            }
-            else
-            {
-                Console.WriteLine("登入失敗");
-            }
-        }
-
-        /// <summary>
-        /// 處理輸入
-        /// </summary>
-        /// <param name="InputType">帳號/密碼</param>
-        /// <param name="MaxLength">最大數量限制</param>
-        /// <returns></returns>
-        public string CheckInputNumber(string InputType, int MaxLength)
-        {
-            string UserInput;
-            do
-            {
-                Console.WriteLine("請輸入" + InputType + ":");
-                UserInput = Console.ReadLine();
-                if (UserInput.Length > 8)
-                {
-                    Console.WriteLine("輸入失敗，請重新輸入" + MaxLength.ToString() + "位數以內的" + InputType);
-                }
-
-            }
-            while (UserInput.Length > 8);
-
-
-            return UserInput;
-        }
+       
 
 
         public int InputToInt(string input)

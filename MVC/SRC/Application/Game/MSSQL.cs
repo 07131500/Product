@@ -16,7 +16,6 @@ namespace Game
     class MSSQL
     {
         private SqlConnection conn;
-        protected string strConn;
         private SqlTransaction dbTransaction = null;
         /// <summary>
         /// 連接

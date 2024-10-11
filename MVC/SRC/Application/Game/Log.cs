@@ -85,7 +85,7 @@ namespace Game
             }
             catch (Exception ex)
             {
-
+               
             }
         }
 
@@ -120,7 +120,7 @@ namespace Game
             }
             catch (Exception ex)
             {
-
+                
             }
         }
 
@@ -139,6 +139,7 @@ namespace Game
             catch (Exception ex)
             {
                 //WriteLogTXT("寫入DB失敗");
+                throw ex;
             }
         }
 
