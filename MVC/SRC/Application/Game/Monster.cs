@@ -56,5 +56,46 @@ namespace Game
             };
         }
 
+
+       
+        public int CalculateDamage(int attackerAttack, int defenderDefense)
+        {
+            int damage = attackerAttack - defenderDefense;
+            return damage > 0 ? damage : 0; // 確保傷害不會為負
+        }
+
+
+        public void Battle(User user, Monster monster)
+        {
+            while (user.HP > 0 && monster.HP > 0)
+            {
+                // 玩家攻擊怪物
+                int userDamage = CalculateDamage(user.Attack, monster.Defense);
+                monster.HP -= userDamage;
+                Console.WriteLine($"{user.UserName} 攻擊 {monster.MonsterName}造成了 {userDamage} 傷害。 {monster.MonsterName} 剩餘血量: {monster.HP}");
+
+                if (monster.HP <= 0)
+                {
+                    Console.WriteLine($"{monster.MonsterName} 已死亡!");
+                    user.CurrentExp += monster.Exp;
+                    Console.WriteLine($"{user.UserName}獲得了{monster.Exp}點經驗");
+                    break;
+                }
+
+                // 怪物攻擊玩家
+                int monsterDamage = CalculateDamage(monster.Attack, user.Defense);
+                user.HP -= monsterDamage;
+                Console.WriteLine($"{monster.MonsterName} 攻擊 {user.UserName}造成了 {monsterDamage} 傷害。 {user.UserName} 剩餘血量: {user.HP}");
+
+                if (user.HP <= 0)
+                {
+                    Console.WriteLine("{user.UserName} 已死亡!");
+                    break;
+                }
+            }
+        }
+
+
+
     }
 }

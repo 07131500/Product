@@ -35,6 +35,8 @@ namespace Game
             set { password = value; }
         }
 
+        public string UserName { get; set; }
+
         public string RoleId { get; set; }
         public string RoleName { get; set; }
         public string TypeName { get; set; }
@@ -48,10 +50,96 @@ namespace Game
         public int CurrentExp { get; set; }
         public int RequiredExp { get; set; }
 
+        public int CurrentGold { get; set; }
 
 
 
+        public void Action()
+        {
+            Console.WriteLine("{冒險}(按數字1) {商店}(按數字2)  {登出}(按數字3)");
+            string UserAction = Console.ReadLine();
 
+            switch (UserAction)
+            {
+                #region 冒險
+                case "1":
+                    Monster m = Monster.GenerateRandomMonster(ms);
+                    string a = $"遇到了怪物:{m.MonsterName},血量:{m.HP},攻擊:{m.Attack},防禦:{m.Defense}";
+                    m.Battle(u, m);
+                    break;
+                #endregion
+
+                #region 商店
+                case "2":
+                    DataTable dt = ms.GetShopProduct();
+                    DataView dv = new DataView(dt);
+                    DataTable distinctValues = dv.ToTable(true, "ShopId");
+                    Console.WriteLine($"商店:第一名");
+                    for (int i = 0; i < distinctValues.Rows.Count; i++)
+                    {
+                        string ItemId = dt.Rows[i]["ItemId"].ToString();
+                        string ItemName = dt.Rows[i]["ItemName"].ToString();
+                        string ProductType = dt.Rows[i]["ProductType"].ToString();
+                        string HP = dt.Rows[i]["HP"].ToString();
+                        string Attack = dt.Rows[i]["Attack"].ToString();
+                        string Defense = dt.Rows[i]["Defense"].ToString();
+                        string Des = dt.Rows[i]["Description"].ToString();
+                        string Price = dt.Rows[i]["Price"].ToString();
+                        string ShopId = dt.Rows[i]["ShopId"].ToString();
+
+
+                        string Location = dt.Rows[i]["Location"].ToString();
+
+                        Console.WriteLine($"商品:{ItemName},血量:{HP},攻擊:{Attack},防禦:{Defense},詳細:{Des},價格:{Price}");
+                        Console.WriteLine($"按{i + 1}購買");
+                    }
+                    Console.WriteLine("按0離開");
+                    string userInput = Console.ReadLine();
+                    if (userInput == "0") { ShowMainMenu(); break; }
+                    DataRow selectedRow = dt.Rows[Convert.ToInt32(userInput) - 1];
+                    RoleId = selectedRow["Id"].ToString();
+                    RoleName = selectedRow["Name"].ToString();
+                    TypeName = selectedRow["TypeName"].ToString();
+                    Level = Convert.ToInt32(selectedRow["Level"]);
+                    HP = Convert.ToInt32(selectedRow["HP"]);
+                    Attack = Convert.ToInt32(selectedRow["Attack"]);
+                    Defense = Convert.ToInt32(selectedRow["Defense"]);
+                    Power = Convert.ToInt32(selectedRow["Power"]);
+                    Agile = Convert.ToInt32(selectedRow["Agile"]);
+                    Intellect = Convert.ToInt32(selectedRow["Intellect"]);
+                    CurrentExp = Convert.ToInt32(selectedRow["CurrentExp"]);
+                    RequiredExp = Convert.ToInt32(selectedRow["RequiredExp"]);
+                    CurrentGold = Convert.ToInt32(selectedRow["CurrentGold"]);
+                    break;
+                #endregion
+                #region 登出
+                case "3":
+                    Logout();
+                    break;
+                    #endregion
+            }
+        }
+        /// <summary>
+        /// 顯示主畫面
+        /// </summary>
+        public void ShowMainMenu()
+        {
+            //顯示主畫面 名稱屬性 商店 冒險 登出 
+            Console.WriteLine($"角色名稱: {RoleName}");
+            Console.WriteLine($"角色職業: {TypeName}");
+            Console.WriteLine($"等級: {Level}");
+            Console.WriteLine($"HP: {HP}");
+            Console.WriteLine($"攻擊: {Attack}");
+            Console.WriteLine($"防禦: {Defense}");
+            Console.WriteLine($"力量: {Power}");
+            Console.WriteLine($"敏捷: {Agile}");
+            Console.WriteLine($"智力: {Intellect}");
+            Console.WriteLine($"當前經驗: {CurrentExp}");
+            Console.WriteLine($"下一級所需經驗: {RequiredExp}");
+            Console.WriteLine($"當前金幣: {CurrentGold}");
+            Console.WriteLine("---------------------------------------------------------------------------------------------------");
+           
+        }
 
         /// <summary>
         /// 註冊
@@ -139,42 +227,10 @@ namespace Game
                 Intellect = Convert.ToInt32(selectedRow["Intellect"]);
                 CurrentExp = Convert.ToInt32(selectedRow["CurrentExp"]);
                 RequiredExp = Convert.ToInt32(selectedRow["RequiredExp"]);
+                CurrentGold= Convert.ToInt32(selectedRow["CurrentGold"]);
                 #endregion
 
-                //顯示主畫面 名稱屬性 商店 冒險 登出 
-                Console.WriteLine($"角色名稱: {RoleName}");
-                Console.WriteLine($"角色職業: {TypeName}");
-                Console.WriteLine($"等級: {Level}");
-                Console.WriteLine($"HP: {HP}");
-                Console.WriteLine($"攻擊: {Attack}");
-                Console.WriteLine($"防禦: {Defense}");
-                Console.WriteLine($"力量: {Power}");
-                Console.WriteLine($"敏捷: {Agile}");
-                Console.WriteLine($"智力: {Intellect}");
-                Console.WriteLine($"當前經驗: {CurrentExp}");
-                Console.WriteLine($"下一級所需經驗: {RequiredExp}");
-                Console.WriteLine("---------------------------------------------------------------------------------------------------");
-                Console.WriteLine("{冒險}(按數字1) {商店}(按數字2)  {登出}(按數字3)");
-
-                CurrentExp = 1000;
-                RoleLevelUP();
-
-                #region 冒險
-
-                #endregion
-
-                #region 商店
-
-                #endregion
-
-                #region 冒險
-
-                #endregion
-
-                #region 登出
-                Logout();
-                #endregion
-
+                ShowMainMenu();
             }
             else
             {
@@ -207,9 +263,16 @@ namespace Game
             return UserInput;
         }
 
+
+
+
+
+
+
+
         public void Logout()
         {
-
+            Environment.Exit(0);
         }
 
 

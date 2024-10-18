@@ -46,10 +46,10 @@ namespace Game
             }
             #endregion
 
-            Program p = new Program();
-            Role r = new Role();
-            Role.Status status = Role.Status.live;
+            user.Logout();
 
+
+            Program p = new Program();
             #region 註冊/登入
             p.ChooseWantDo();
             #endregion
@@ -77,7 +77,7 @@ namespace Game
             //ms.CreateEquip(EquipName, HP, Attack, Defense, EquipDescribe);
             #endregion
           
-            Console.WriteLine((int)status);
+            Console.WriteLine("");
             Console.ReadLine();
         }
 

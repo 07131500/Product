@@ -46,12 +46,12 @@ SKILL  HP ATTACK DEFENSE
 
 
 
-裝備  HP  ATTACK  DEFENSE  Describe
-短劍  0     1                0               短小無力
-劍      1     1               0	   最普通的武器之一
-寬劍   1     1               1	   均衡且沒特色
-長劍   1       2             0	   變長了，還是很普通
-大長劍  1    2             1	   又長又大
+裝備  HP  ATTACK  DEFENSE  Describe			Price
+短劍  0     1                0               短小無力		200
+劍      1     1               0	   最普通的武器之一	400
+寬劍   1     1               1	   均衡且沒特色		800
+長劍   1       2             0	   變長了，還是很普通	1600
+大長劍  1    2             1	   又長又大		3200
 
 
 
@@ -79,6 +79,10 @@ GetRoleData    選擇腳色的邏輯 ， 進入後的主畫面，
 
 
 商店 ->設定可以用錢買的道具
+紅藥     
+藍藥
+
+
 
 登出 ->跳回到登入介面
 
@@ -89,7 +93,8 @@ GetRoleData    選擇腳色的邏輯 ， 進入後的主畫面，
 
 
 
-
+通常遊戲程式的商店，在資料表設計的時候，都怎麼做?，是只設計一個SHOP還是多設計一個Product
+要做的只有一個建立資料庫跟資料表
 
 
 
@@ -97,6 +102,439 @@ GetRoleData    選擇腳色的邏輯 ， 進入後的主畫面，
 VM
 
 Inter Omter
+
+
+
+
+1. SHOP 表
+用途：存儲商店基本信息。
+字段：
+ShopID (主鍵)
+ShopName (商店名稱)
+Location (位置或類型)
+2. PRODUCT 表
+用途：存儲商店中可購買的商品信息。
+字段：
+ProductID (主鍵)
+ProductName (商品名稱)
+Price (價格)
+Description (描述)
+ShopID (外鍵，指向相應的商店)
+3. TRANSACTIONS 表
+用途：記錄用戶的購買交易。
+字段：
+TransactionID (主鍵)
+UserID (用戶 ID)
+ProductID (外鍵，指向商品)
+Quantity (購買數量)
+TransactionDate (交易日期)
+設計考量
+簡單明瞭：這種結構保持了簡潔，便於快速開發和維護。
+彈性擴展：隨著需求增長，可以逐步添加更多字段或表。
+易於查詢：可以方便地查詢商店中的商品和用戶的購買記錄。
+附加功能
+如果需要，還可以根據需求添加一些附加功能：
+
+優惠券/折扣：可以設計一個優惠券表來管理折扣信息。
+庫存管理：如果有庫存管理需求，可以在 PRODUCT 表中添加 StockQuantity 字段。
+這種設計方案適合中小型遊戲，能夠靈活應對基本的商店功能需求。
+
+
+
+
+如果你希望產品可以在多個商店中存在，則需要引入一個額外的關聯表來管理產品和商店之間的多對多關係。這樣的設計能夠靈活地處理每個產品可以在多個商店出售的情況。
+
+### 1. **建立關聯表**
+
+你需要創建一個新的表，例如 `ProductShop`，來管理 `Product` 和 `Shop` 之間的關聯。這個表將包含 `ProductId` 和 `ShopId` 作為外鍵。
+
+```sql
+CREATE TABLE [dbo].[ProductShop] (
+    [ProductId] INT NOT NULL,
+    [ShopId] NVARCHAR(50) NOT NULL,
+    PRIMARY KEY (ProductId, ShopId),
+    FOREIGN KEY (ProductId) REFERENCES Product(ProductId),
+    FOREIGN KEY (ShopId) REFERENCES Shop(ShopId)
+);
+```
+
+### 2. **更新產品和商店表**
+
+- **Product 表**：不需要改變，因為產品仍然可以獨立存在。
+- **Shop 表**：同樣不需要改變，商店也可以獨立存在。
+
+### 3. **示例查詢**
+
+在這種設計下，你可以使用 `JOIN` 查詢來獲取某個商店的所有產品，或者某個產品的所有商店。以下是查詢某個商店所有產品的示例：
+
+```sql
+SELECT p.*
+FROM Product p
+JOIN ProductShop ps ON p.ProductId = ps.ProductId
+JOIN Shop s ON ps.ShopId = s.ShopId
+WHERE s.ShopId = '某個商店的ID';  -- 替換為實際的商店ID
+```
+
+### 4. **示例插入資料**
+
+當你想將某個產品添加到某個商店時，可以先將產品插入 `Product` 表，再在 `ProductShop` 表中添加關聯：
+
+```sql
+-- 插入產品
+INSERT INTO Product (ProductId, ProductName, Price, Description)
+VALUES (1, '產品A', 100, '產品A描述');
+
+-- 插入商店
+INSERT INTO Shop (ShopId, ShopName, Location)
+VALUES ('Shop1', '商店A', '地點A');
+
+-- 在關聯表中添加產品和商店的關聯
+INSERT INTO ProductShop (ProductId, ShopId)
+VALUES (1, 'Shop1');
+```
+
+### 總結
+
+- **使用關聯表**：`ProductShop` 表用於管理 `Product` 和 `Shop` 之間的多對多關係。
+- **資料完整性**：透過外鍵約束來保證資料的一致性。
+- **查詢靈活性**：能夠輕鬆查詢產品在不同商店的存在情況。
+
+這樣的設計能夠有效地處理產品與商店之間的多對多關係。如果你還有其他問題或需要進一步的建議，隨時告訴我！
+
+
+
+
+
+
+
+
+
+
+
+在遊戲程式中，商品的設計通常會涉及到各種物品類型，例如藥品、裝備和其他道具。這裡是一個具體的設計建議，包含資料表結構和示範購買裝備及藥品的邏輯。
+
+### 1. **資料表設計**
+
+#### **商品表 (Product)**
+
+用於存儲所有商品的信息，包括裝備和藥品的共同屬性。
+
+```sql
+CREATE TABLE [dbo].[Product] (
+    [ProductId] INT NOT NULL PRIMARY KEY,
+    [ProductName] NVARCHAR(30) NOT NULL,
+    [Price] INT NOT NULL,
+    [Description] NVARCHAR(50),
+    [ProductType] NVARCHAR(20) NOT NULL, -- "Equipment" 或 "Potion"
+    [HPRecovery] INT NULL, -- 藥品的 HP 回復量
+    [AttackBoost] INT NULL, -- 裝備的攻擊加成
+    [DefenseBoost] INT NULL -- 裝備的防禦加成
+);
+```
+
+
+ProdcutId 跟 ProductType 去找 
+
+
+#### **角色表 (Character)**
+
+用於存儲角色的屬性，包括裝備和當前狀態。
+
+```sql
+CREATE TABLE [dbo].[Character] (
+    [CharacterId] INT NOT NULL PRIMARY KEY,
+    [CharacterName] NVARCHAR(30) NOT NULL,
+    [HP] INT NOT NULL,
+    [Attack] INT NOT NULL,
+    [Defense] INT NOT NULL,
+    [EquippedProductId] INT NULL, -- 目前裝備的商品ID
+    FOREIGN KEY (EquippedProductId) REFERENCES Product(ProductId)
+);
+```
+
+#### **商店表 (Shop)**
+
+用於存儲商店信息。
+
+```sql
+CREATE TABLE [dbo].[Shop] (
+    [ShopId] NVARCHAR(50) NOT NULL PRIMARY KEY,
+    [ShopName] NVARCHAR(50) NOT NULL,
+    [Location] NVARCHAR(50) NOT NULL
+);
+```
+
+#### **購買紀錄表 (Purchase)**
+
+用於記錄購買的商品。
+
+```sql
+CREATE TABLE [dbo].[Purchase] (
+    [PurchaseId] INT NOT NULL PRIMARY KEY,
+    [CharacterId] INT NOT NULL,
+    [ProductId] INT NOT NULL,
+    [PurchaseDate] DATETIME NOT NULL,
+    FOREIGN KEY (CharacterId) REFERENCES Character(CharacterId),
+    FOREIGN KEY (ProductId) REFERENCES Product(ProductId)
+);
+```
+
+### 2. **商品的功能設計**
+
+- **藥品**：藥品的功能通常是恢復角色的 HP。當角色使用藥品時，系統會增加角色的 HP 值。
+
+- **裝備**：裝備的功能是提升角色的屬性（如攻擊和防禦）。當角色穿戴裝備時，角色的攻擊和防禦值會根據裝備的加成進行更新。
+
+### 3. **購買商品的示範**
+
+以下是一個簡單的示範程式碼，展示如何從商店購買商品並應用效果：
+
+```csharp
+public void PurchaseItem(Character character, int productId)
+{
+    // 獲取商品資訊
+    DataTable productInfo = ms.GetProductInfo(productId);
+    if (productInfo.Rows.Count == 0)
+    {
+        Console.WriteLine("商品不存在");
+        return;
+    }
+
+    DataRow product = productInfo.Rows[0];
+    int price = Convert.ToInt32(product["Price"]);
+    
+    // 檢查角色的金幣是否足夠
+    if (character.Gold < price)
+    {
+        Console.WriteLine("金幣不足，無法購買");
+        return;
+    }
+
+    // 更新角色的金幣
+    character.Gold -= price;
+
+    // 記錄購買
+    ms.RecordPurchase(character.CharacterId, productId);
+
+    // 應用商品效果
+    string productType = product["ProductType"].ToString();
+    if (productType == "Potion")
+    {
+        int hpRecovery = Convert.ToInt32(product["HPRecovery"]);
+        character.HP += hpRecovery;
+        Console.WriteLine($"使用藥品，回復 HP {hpRecovery} 點");
+    }
+    else if (productType == "Equipment")
+    {
+        // 裝備並提升屬性
+        character.Attack += Convert.ToInt32(product["AttackBoost"]);
+        character.Defense += Convert.ToInt32(product["DefenseBoost"]);
+        character.EquippedProductId = productId;
+        Console.WriteLine($"裝備成功，攻擊力提升 {product["AttackBoost"]}，防禦力提升 {product["DefenseBoost"]}");
+    }
+
+    Console.WriteLine("購買成功");
+}
+```
+
+### 4. **總結**
+
+- **資料表設計**：根據遊戲需求設計適合的資料表，包括商品、角色、商店和購買紀錄。
+- **功能實現**：根據商品類型實現不同的功能，如 HP 恢復和屬性提升。
+- **購買邏輯**：實現商品購買的流程，包括檢查金幣、記錄購買和應用效果。
+
+這樣的設計能幫助你管理遊戲中的商品和角色之間的互動。如果你有其他問題或需要進一步的幫助，隨時告訴我！
+
+
+
+使用者
+User 
+
+人物
+Role
+
+升級經驗及增加屬性
+RolrExp
+
+怪物
+Monster
+
+紀錄操作
+Sys_Log
+
+裝備
+Equip
+
+藥品雜物
+Product
+
+商店
+Shop
+
+
+
+
+
+
+
+
+1	紅藥	Postion	5	NULL	NULL	恢復5點生命	10	1
+2	藍藥	Postion	20	NULL	NULL	恢復20點生命	40	1
+3	白藥	Postion	100	NULL	NULL	恢復100點生命	200	1
+1	短劍	Equip	0	1	0	短小無力	200	1
+2	劍	Equip	1	1	0	最普通的武器之一	400	1
+3	寬劍	Equip	1	1	1	均衡且沒特色	800	1
+4	長劍	Equip	1	2	0	變長了，還是很普通	1600	1
+5	大長劍	Equip	1	2	1	又長又大	3200	1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+這個錯誤的原因是，在第二個 `SELECT` 查詢中，`ROW_NUMBER()` 的 `ORDER BY` 子句引用了 `ItemId`，但在這個上下文中，`ItemId` 尚未被定義。
+
+在使用 `UNION` 時，SQL Server 會先處理每個查詢的結果，然後再進行合併。在第二個查詢中，您無法直接引用來自第一個查詢的列。
+
+### 修正方法
+您可以使用一個子查詢來確保在 `ROW_NUMBER()` 中引用正確的列。下面是修正後的查詢：
+
+```sql
+WITH CombinedItems AS (
+    SELECT 
+        ROW_NUMBER() OVER (ORDER BY EquipId) AS RowNum,
+        EquipId AS ItemId,
+        EquipName AS ItemName,
+        ProductType,
+        HP,
+        Attack,
+        Defense,
+        Describe AS Description,
+        Price,
+        ShopId,
+        'Equip' AS ItemCategory
+    FROM 
+        [dbo].[Equip]
+    WHERE 
+        ShopId = 1
+
+    UNION ALL
+
+    SELECT 
+        ROW_NUMBER() OVER (ORDER BY PotionId) AS RowNum,
+        PotionId AS ItemId,
+        PotionName AS ItemName,
+        ProductType,
+        HP,
+        Attack,
+        Defense,
+        Description,
+        Price,
+        ShopId,
+        'Potion' AS ItemCategory
+    FROM 
+        [dbo].[Potion]
+    WHERE 
+        ShopId = 1
+)
+
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY ItemId) AS FinalRowNum, 
+    ItemId,
+    ItemName,
+    ProductType,
+    HP,
+    Attack,
+    Defense,
+    Description,
+    Price,
+    ShopId,
+    ItemCategory
+FROM 
+    CombinedItems;
+```
+
+### 說明
+1. **`WITH CombinedItems AS (...)`**：使用 Common Table Expression (CTE) 來定義一個臨時的結果集 `CombinedItems`，這樣就可以在後面的查詢中引用它。
+  
+2. **第一個 `SELECT`**：從 `Equip` 表中查詢並為每個項目生成流水號。
+
+3. **第二個 `SELECT`**：從 `Potion` 表中查詢，這裡不再需要加上 `Equip` 的計數來保證流水號不重複，因為流水號是在最外層的查詢中重新生成的。
+
+4. **最終查詢**：使用 `ROW_NUMBER()` 來生成最終的流水號 `FinalRowNum`，這樣可以確保所有項目都有唯一的流水號。
+
+這樣的做法應該能夠避免 `Invalid column name 'ItemId'` 的錯誤。如果您有其他問題或需要進一步幫助，隨時告訴我！
+
+
+
+
+
+
+
+
+
+WITH CombinedItems AS (
+    SELECT 
+        ROW_NUMBER() OVER (ORDER BY EquipId) AS RowNum,
+        EquipId AS ItemId,
+        EquipName AS ItemName,
+        ProductType,
+        HP,
+        Attack,
+        Defense,
+        Describe AS Description,
+        Price,
+        ShopId,
+        'Equip' AS ItemCategory
+    FROM 
+        [dbo].[Equip]
+    WHERE 
+        ShopId = 1
+
+    UNION ALL
+
+    SELECT 
+        ROW_NUMBER() OVER (ORDER BY PotionId) AS RowNum,
+        PotionId AS ItemId,
+        PotionName AS ItemName,
+        ProductType,
+        HP,
+        Attack,
+        Defense,
+        Description,
+        Price,
+        ShopId,
+        'Potion' AS ItemCategory
+    FROM 
+        [dbo].[Potion]
+    WHERE 
+        ShopId = 1
+)
+
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY ItemId) AS FinalRowNum, 
+    ItemId,
+    ItemName,
+    ProductType,
+    HP,
+    Attack,
+    Defense,
+    Description,
+    Price,
+    ShopId,
+    ItemCategory
+FROM 
+    CombinedItems;
+
+
 
 
 
