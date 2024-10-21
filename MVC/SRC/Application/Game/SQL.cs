@@ -274,8 +274,8 @@ namespace Game
             strSql.AppendLine("ProductType,HP,Attack,Defense,Describe AS Description,");
             strSql.AppendLine("Price,ShopId,'Equip' AS ItemCategory ");
             strSql.AppendLine("FROM [dbo].[Equip] ");
-            strSql.AppendLine("UNION ALL ");
             strSql.AppendLine("WHERE ShopId=@EShopId ");
+            strSql.AppendLine("UNION ALL ");
             strSql.AppendLine("SELECT PotionId AS ItemId, PotionName AS ItemName,");
             strSql.AppendLine("ProductType,HP,Attack,Defense,Description,");
             strSql.AppendLine("Price,ShopId,'Potion' AS ItemCategory ");
